@@ -35,7 +35,7 @@ def get_peak_memory_mb_dp():
     peaks = []
     for i in range(torch.cuda.device_count()):
         peaks.append(torch.cuda.max_memory_allocated(i))
-    print('2 GPU_RAM: ', peaks)
+    print('2 GPU_RAM: ', peaks / (1024 ** 2))
     return max(peaks) / (1024 ** 2) if peaks else 0.0
 
 def get_peak_memory_mb_single(device):
@@ -240,6 +240,7 @@ def train_ddp(rank, world_size, args):
 
         # get local peak memory (bytes) and reduce (max) to rank 0 to print
         local_peak_bytes = torch.tensor(torch.cuda.max_memory_allocated(rank), device=device, dtype=torch.float64)
+        print('Local peak bytes on rank ', rank, ': ', local_peak_bytes.item()/ (1024 ** 2))
         dist.reduce(local_peak_bytes, dst=0, op=dist.ReduceOp.MAX)
         if rank == 0:
             peak_mem_mb = (local_peak_bytes.item()) / (1024 ** 2)
