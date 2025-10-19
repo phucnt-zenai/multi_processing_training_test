@@ -35,7 +35,8 @@ def get_peak_memory_mb_dp():
     peaks = []
     for i in range(torch.cuda.device_count()):
         peaks.append(torch.cuda.max_memory_allocated(i))
-    print('2 GPU_RAM: ', peaks / (1024 ** 2))
+    peak_ = [p / (1024 ** 2) for p in peaks]
+    print('2 GPU_RAM: ', peak_)
     return max(peaks) / (1024 ** 2) if peaks else 0.0
 
 def get_peak_memory_mb_single(device):
