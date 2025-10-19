@@ -75,7 +75,7 @@ def train_ddp(rank, world_size, args):
     torch.cuda.set_device(rank)
     device = torch.device(f'cuda:{rank}')
 
-    model = ResNetClassifier().to(device)
+    model = ResNetClassifier(in_channels=args.in_channels).to(device)
     model = DDP(model, device_ids=[rank])
 
     criterion = nn.CrossEntropyLoss().to(device)
@@ -140,13 +140,14 @@ if __name__ == '__main__':
     parser.add_argument('--ddp', action='store_true', help='use Distributed Data Parallel training')
     parser.add_argument('--dp', action='store_true', help='use Data Parallel training')
     parser.add_argument('--seed', type=int, default=42, help='random seed (default: 42)')
+    parser.add_argument('in_channels', type=int, default=1, help='number of input channels (default: 1 for MNIST)')
 
     args = parser.parse_args()
 
     global_seed(args.seed)
 
     if args.dp:
-        model = ResNetClassifier().to(args.device)
+        model = ResNetClassifier(in_channels=args.in_channels).to(args.device)
         model = nn.DataParallel(model)
 
         train_dataset, valid_dataset = get_mnist_datasets(random_seed=args.seed)
@@ -168,7 +169,7 @@ if __name__ == '__main__':
         
     
     else:
-        model = ResNetClassifier().to(args.device)
+        model = ResNetClassifier(in_channels=args.in_channels).to(args.device)
 
         train_dataset, valid_dataset = get_mnist_datasets(random_seed=args.seed)
         
