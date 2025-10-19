@@ -27,7 +27,7 @@ def global_seed(seed):
 
 import time
 
-
+### Calculate peak memory per GPU
 def get_peak_memory_mb_dp():
     # cho DataParallel (single process) lấy max across devices
     if not torch.cuda.is_available():
@@ -35,6 +35,7 @@ def get_peak_memory_mb_dp():
     peaks = []
     for i in range(torch.cuda.device_count()):
         peaks.append(torch.cuda.max_memory_allocated(i))
+    print('2 GPU_RAM: ', peaks)
     return max(peaks) / (1024 ** 2) if peaks else 0.0
 
 def get_peak_memory_mb_single(device):
@@ -46,6 +47,8 @@ def get_peak_memory_mb_single(device):
     except Exception:
         dev_idx = torch.cuda.current_device()
     return torch.cuda.max_memory_allocated(dev_idx) / (1024 ** 2)
+
+
 
 def train(model, train_loader, valid_loader, args):
     criterion = nn.CrossEntropyLoss()
