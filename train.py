@@ -140,7 +140,7 @@ if __name__ == '__main__':
     parser.add_argument('--ddp', action='store_true', help='use Distributed Data Parallel training')
     parser.add_argument('--dp', action='store_true', help='use Data Parallel training')
     parser.add_argument('--seed', type=int, default=42, help='random seed (default: 42)')
-    parser.add_argument('in_channels', type=int, default=1, help='number of input channels (default: 1 for MNIST)')
+    parser.add_argument('--in_channels', type=int, default=1, help='number of input channels (default: 1 for MNIST)')
 
     args = parser.parse_args()
 
